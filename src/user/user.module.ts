@@ -4,9 +4,9 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule], // aqui será modulos
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService], // class ou funções que precisam ser injetaveis.
   exports: [],
 })
 export class UserModel {}
