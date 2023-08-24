@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -30,7 +29,7 @@ export class UserController {
   }
 
   @Get(':id')
-  async show(@Param('id', ParseIntPipe) id: string) {
+  async show(@Param('id') id: string) {
     return this.userService.show(id);
   }
 

@@ -8,11 +8,12 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
+  id         String    @id @default(uuid())
   name       String
-  email      String   @unique
+  email      String    @unique
   password   String
-  created_at DateTime @default(now())
+  birth_at   DateTime?
+  created_at DateTime  @default(now())
   updated_at DateTime
 
   @@map("users")
