@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserPatchDTO } from './dto/update-user-patch.dto';
@@ -75,19 +75,14 @@ export class UserService {
         },
       });
     } catch (err) {
+      console.log(err);
       return err;
     }
   }
 
   async exists(id: string) {
     if (!(await this.show(id))) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          error: 'This is a custom message',
-        },
-        HttpStatus.FORBIDDEN,
-      );
+      throw new NotFoundException();
     }
   }
 }
