@@ -64,7 +64,7 @@ export class UserService {
   async delete(id: string) {
     try {
       if (!(await this.show(id))) {
-        throw new NotFoundException(); // Verificar o erro aqui!!
+        throw new NotFoundException(); // Verificar o erro aqui!
       }
 
       return this.prisma.user.delete({
