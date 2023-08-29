@@ -9,6 +9,7 @@ import {
   Put,
 } from '@nestjs/common';
 
+import { ParamId } from 'src/decorators/param-id.decorator';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserPatchDTO } from './dto/update-user-patch.dto';
 import { UpdateUserPutDTO } from './dto/update-user-put.dto';
@@ -29,7 +30,7 @@ export class UserController {
   }
 
   @Get(':id')
-  async show(@Param('id') id: string) {
+  async show(@ParamId() id: string) {
     return this.userService.show(id);
   }
 
