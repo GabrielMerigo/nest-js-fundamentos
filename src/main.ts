@@ -1,15 +1,13 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ErrorsInterceptor } from './errors/errors.interceptor';
-import { HttpExceptionFilter } from './errors/http-exception.filter';
+import { LogInterceptor } from './interceptors/log.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalInterceptors(new ErrorsInterceptor());
+  app.useGlobalInterceptors(new LogInterceptor());
 
   await app.listen(3000);
 }
