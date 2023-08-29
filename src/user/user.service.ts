@@ -25,7 +25,7 @@ export class UserService {
   }
 
   async show(id: string) {
-    this.exists(id);
+    await this.exists(id);
 
     return this.prisma.user.findUnique({
       where: {
@@ -68,18 +68,13 @@ export class UserService {
   }
 
   async delete(id: string) {
-    try {
-      await this.exists(id);
+    await this.exists(id);
 
-      return this.prisma.user.delete({
-        where: {
-          id,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      return err;
-    }
+    return this.prisma.user.delete({
+      where: {
+        id,
+      },
+    });
   }
 
   async exists(id: string) {

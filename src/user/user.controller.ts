@@ -36,7 +36,7 @@ export class UserController {
 
   @Put(':id')
   async update(@Body() body: UpdateUserPutDTO, @Param('id') id: string) {
-    this.userService.update(id, body);
+    return this.userService.update(id, body);
   }
 
   @Patch(':id')
@@ -44,11 +44,11 @@ export class UserController {
     @Body() body: UpdateUserPatchDTO,
     @Param('id') id: string,
   ) {
-    this.userService.updatePartial(id, body);
+    return this.userService.updatePartial(id, body);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    this.userService.delete(id);
+    return this.userService.delete(id);
   }
 }
