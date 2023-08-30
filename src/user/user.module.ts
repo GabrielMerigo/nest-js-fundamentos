@@ -13,9 +13,9 @@ import { UserService } from './user.service';
   imports: [PrismaModule], // aqui será modulos
   controllers: [UserController],
   providers: [UserService], // class ou funções que precisam ser injetaveis.
-  exports: [],
+  exports: [UserService],
 })
-export class UserModel implements NestModule {
+export class UserModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(UserIdCheckMiddleware).forRoutes({
       path: 'users/:id',
