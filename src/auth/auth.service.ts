@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+
 import {
   BadRequestException,
   Injectable,
@@ -58,12 +60,17 @@ export class AuthService {
     const user = await this.prisma.user.findFirst({
       where: {
         email,
-        password,
       },
     });
 
     if (!user) {
-      throw new UnauthorizedException('Email or password incorrect.');
+      throw new UnauthorizedException('Email or password are incorrect.');
+    }
+
+    const isCorrectPassword = await bcrypt.compare(password, user.password);
+
+    if (!isCorrectPassword) {
+      throw new UnauthorizedException('Email or password are incorrect.');
     }
 
     return this.createToken(user);
