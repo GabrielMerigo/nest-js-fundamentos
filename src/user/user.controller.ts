@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { ParamId } from 'src/decorators/param-id.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/enums/role.enum';
@@ -31,6 +32,7 @@ export class UserController {
     return this.userService.create(body);
   }
 
+  @UseGuards(ThrottlerGuard)
   @Roles(Role.ADMIN, Role.USER)
   @Get()
   async list() {
