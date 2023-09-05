@@ -1,7 +1,18 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 
+import { FileInterceptor } from '@nestjs/platform-express';
+import { join } from 'path';
 import { User } from 'src/decorators/user.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { FileService } from '../file/file.service';
 import { AuthService } from './auth.service';
 import { AuthForgetDTO } from './dto/auth-forget.dto';
 import { AuthLoginDTO } from './dto/auth-login.dto';
@@ -10,7 +21,10 @@ import { AuthResetDTO } from './dto/auth-reset.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly fileService: FileService,
+  ) {}
 
   @Post('login')
   async login(@Body() { email, password }: AuthLoginDTO) {
@@ -36,5 +50,25 @@ export class AuthController {
   @Post('me')
   async me(@User() user) {
     return { user };
+  }
+
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('photo')
+  async uploadPhoto(@User() user, @UploadedFile() photo: Express.Multer.File) {
+    try {
+      const path = join(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'storage',
+        `photo-${user.id}.png`,
+      );
+
+      return await this.fileService.upload(photo, path);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }
