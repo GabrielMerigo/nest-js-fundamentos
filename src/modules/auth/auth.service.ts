@@ -10,6 +10,7 @@ import { User } from '@prisma/client';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { UserService } from 'src/modules/user/user.service';
 import { AuthRegisterDTO } from './dto/auth-register.dto';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
     private readonly userService: UserService,
+    private readonly mailer: MailerService,
   ) {}
 
   createToken(user: User) {
@@ -77,7 +79,7 @@ export class AuthService {
   }
 
   async forget(email: string) {
-    const user = this.prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: {
         email,
       },
@@ -87,25 +89,56 @@ export class AuthService {
       throw new UnauthorizedException('Email is incorrect.');
     }
 
-    // TO DO: Enviar o e-mail
+    const token = this.jwtService.sign(
+      {
+        id: user.id,
+      },
+      {
+        expiresIn: '15 days',
+        issuer: 'forget',
+      },
+    );
+
+    await this.mailer.sendMail({
+      subject: 'Recovering password',
+      to: 'serie@gmail.com',
+      template: 'forgetPassword.pug',
+      context: {
+        name: user.name,
+        token,
+      },
+    });
 
     return true;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async reset(password: string, token: string) {
-    const id = '0';
+    try {
+      const { id } = this.jwtService.verify(token, {
+        issuer: 'forget',
+      });
 
-    const user = await this.prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
+      console.log(id);
+
+      const passwordHashed = await bcrypt.hash(
         password,
-      },
-    });
+        await bcrypt.genSalt(),
+      );
 
-    return this.createToken(user);
+      const user = await this.prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          password: passwordHashed,
+        },
+      });
+
+      return this.createToken(user);
+    } catch (e) {
+      throw new BadRequestException(e);
+    }
   }
 
   async register(data: AuthRegisterDTO) {
