@@ -1,10 +1,10 @@
 import * as bcrypt from 'bcrypt';
-
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
+
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserPatchDTO } from './dto/update-user-patch.dto';
 import { UpdateUserPutDTO } from './dto/update-user-put.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
