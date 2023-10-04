@@ -84,7 +84,7 @@ export class UserService {
       },
     });
 
-    return;
+    return true;
   }
 
   async exists(id: string) {

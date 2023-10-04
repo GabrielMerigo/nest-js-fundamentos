@@ -5,11 +5,10 @@ export const userRepositoryMock = {
   provide: UserService,
   useValue: {
     create: jest.fn().mockResolvedValue(userEntityList[0]),
-    list: jest.fn(),
-    show: jest.fn(),
-    update: jest.fn(),
-    updatePartial: jest.fn(),
-    delete: jest.fn(),
-    exists: jest.fn(),
+    list: jest.fn().mockResolvedValue(userEntityList),
+    show: jest.fn().mockResolvedValue(userEntityList[0]),
+    updatePartial: jest.fn().mockResolvedValue(userEntityList[0]),
+    update: jest.fn().mockResolvedValue(userEntityList[0]),
+    delete: jest.fn().mockResolvedValue(true),
   },
 };
